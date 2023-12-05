@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  function test01 () {
+    const xhr = new XMLHttpRequest();
+    const url = "http://jsonplaceholder.typicode.com/posts222";
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        console.log(response);
+      } else {
+        console.log("失败啦--xhr.readyState === 4 && xhr.status === 200");
+      }
+    };
+    xhr.onerror = function () {
+      console.log("失败啦");
+      console.error(this.statusText);
+    };
+    xhr.send();
+  }
+  // test01();
+  function test02 () {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const url = "http://jsonplaceholder.typicode.com/posts";
+      xhr.open("GET", url, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          console.log(response);
+          resolve(response);
+        } else {
+          console.log("失败啦--xhr.readyState === 4 && xhr.status === 200");
+          reject(new Error(this.statusText))
+        }
+      }
+      xhr.onerror = function () {
+        console.log("onerror失败啦--xhr.readyState === 4 && xhr.status === 200");
+        reject(new Error(this.statusText))
+      }
+      xhr.send();
+    })
+  }
+  // test02().then(res => {
+  //   console.log(res);
+  // }).catch(e=>{
+  //   console.log("error");
+  // }).finally(()=>{
+  //   console.log("finally");
+  // })
+  //到这里彻底结束了，不过为何ajax那个else分支会执行？是由于状态从1 2 3 4
+
+
+const someAsyncThing = function() {
+  return new Promise(function(resolve, reject) {
+    // 下面一行会报错，因为x没有声明
+    resolve(x + 2);
+  });
+};
+someAsyncThing().then(function() {
+  return someOtherAsyncThing();
+}).catch(function(error) {
+  console.log('oh no', error);
+  // 下面一行会报错，因为 y 没有声明
+  y + 2;
+}).then(function() {
+  console.log('carry on');
+}, function() {
+  console.log('rejected carry on');
+});
+// oh no [ReferenceError: x is not defined]
+
+</script>
+
+</html>

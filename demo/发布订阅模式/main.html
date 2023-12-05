@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- 简单版 -->
+  <!-- https://juejin.cn/post/6844903850105634824 -->
+  <!-- vue版 -->
+  <!-- https://juejin.cn/post/7115045013553168415?from=search-suggest#heading-9 -->
+
+</body>
+<script>
+  class Observer {
+    constructor() {
+      this.$message = {
+        //事件名 回掉函数列表
+        // "bug": [handle1]
+      }
+    }
+    //添加事件订阅
+    $on (eventName, callback) {
+      //事件是否注册
+      (this.$message[eventName] || (this.$message[eventName] = [])).push(callback)
+    }
+    //移除事件订阅
+    $off (eventName, callback) {
+      //用户想删除整个事件
+      if (!callback) {
+        delete this.$message[eventName]
+        return;
+      }
+      //事件存在
+      if (this.$message[eventName]) {
+        //删除事件对应的回掉函数
+        this.$message[eventName] = this.$message[eventName].filter(item => item !== callback)
+      } else {
+        console.log("取消订阅的事件已经不存在");
+      }
+    }
+    //触发事件 无法传参
+    $emit (eventName) {
+      if (this.$message[eventName]) {
+        this.$message[eventName].forEach(callback => {
+          callback()
+        })
+      }
+    }
+
+    //事件只能触发一次
+    $once(eventName,callback){
+
+    }
+  }
+  // 测试$on
+  function test01 () {
+    function handlerA () {
+      console.log('handlerA');
+    }
+    function handlerB () {
+      console.log('handlerB');
+    }
+    function handlerC () {
+      console.log('handlerC');
+    }
+
+    // 使用构造函数创建一个实例
+    const person1 = new Observer();
+
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+
+    console.log('person1 :>> ', person1);
+  }
+  // test01()
+  function test02 () {
+    function handlerA () {
+      console.log('handlerA');
+    }
+    function handlerB () {
+      console.log('handlerB');
+    }
+    function handlerC () {
+      console.log('handlerC');
+    }
+    // 使用构造函数创建一个实例
+    const person1 = new Observer();
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+    person1.$on('buy', handlerC);
+    console.log('取消回调前 :>> ', person1);
+    person1.$off("buy", handlerA)
+    console.log('取消回调后 :>> ', person1);
+    person1.$off("buy")
+    console.log('删除整个事件 :>> ', person1);
+  }
+  // test02()
+  function test03 () {
+    function handlerA () {
+      console.log('buy handlerA');
+    }
+    function handlerB () {
+      console.log('buy handlerB');
+    }
+    function handlerC () {
+      console.log('buy handlerC');
+    }
+    // 使用构造函数创建一个实例
+    const person1 = new Observer();
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+    person1.$on('buy', handlerC);
+    console.log('person1 :>> ', person1);
+    // 触发 buy 事件
+    person1.$emit('buy')
+  }
+  // test03()
+</script>
+
+</html>

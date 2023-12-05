@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  //https://github.com/qianlongo/fe-handwriting 前端手撕系列题目
+  // 证明无限循环递归的场景只有：使用浏览器，然后重写toString方法
+  function add () {
+    let args = Array.prototype.slice.call(arguments)
+    let inner = function () {
+      args.push(...arguments)
+      return inner
+    }
+    inner.toString = function () {
+      return args.reduce(function (prev, cur) {
+        return prev + cur
+      })
+    }
+    return inner
+  }
+  console.log(add(1)(2)(3))
+</script>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<!-- http://www.ruanyifeng.com/blog/2014/10/event-loop.html 阮一峰讲事件循环 -->
+<body>
+  <div id="main">
+    <template>
+      <div>我是template</div>
+    </template>
+    <div>我是自定义表现abc</div>
+    <div class="1">
+      <h1>555</h1>
+    </div>
+    <div class="2">666</div>
+  </div>
+  <script>
+    console.log('宏任务script1同步任务开始'); //1
+    setTimeout(() => {
+      console.log('宏任务script1中的定时器宏任务执行'); //9
+    }, 0);
+    console.log('宏任务script1同步任务结束'); //2
+  </script>
+  <script>
+    console.log('宏任务script2同步任务开始'); //3
+    Promise.resolve('6').then(() => {
+      setTimeout(() => {
+        console.log('宏任务script2中的定时器宏任务执行'); //10
+      }, 0)
+      console.log('宏任务script2中的微任务执行'); //5
+      const myPromise = new Promise(resolve => {
+        console.log('宏任务script2中的微任务中的同步任务开始'); //6
+        resolve(console.log('7')) //7
+      })
+      myPromise.then(() => {
+        console.log('宏任务script2中的微任务中微任务执行'); //8
+      })
+    }) //
+    console.log('宏任务script2同步任务结束'); //4
+  </script>
+  <!-- <script>
+    var threeSum = function (nums) {
+      let ans = []
+      let arr = nums.sort((a, b) => {
+        return a - b
+      })
+      for (let i = 0; i < arr.length - 1; i++) {
+        let left = i + 1
+        let right = arr.length - 1
+        while (left < right) {
+          if (arr[i] + arr[left] + arr[right] === 0) {
+            ans.push([arr[i], arr[left], arr[right]])
+            // 去重
+            while (left < right && arr[left] === arr[left + 1]) {
+              left++
+            }
+            while (left < right && arr[right] === arr[right - 1]) {
+              right--
+            }
+            left++
+            right--
+          } else if (arr[i] + arr[left] + arr[right] > 0) {
+            right--
+          } else {
+            left++
+          }
+        }
+      }
+      return ans
+    };
+    console.log(threeSum([-1,0,1,2,-1,-4]));
+//     Object.prototype.myDeepCopy = function(){
+//   let ans = this instanceof Array ? [] : {}
+//   if (typeof this !== 'object') return;
+//   for (let key in this){
+//     if (this.hasOwnProperty(key)){
+//       ans[key] = typeof this[key] === 'object' ? deepCopy(this[key]) : this[key]
+//     }
+//   }
+//   return ans;
+// }
+// console.log(obj.myDeepCopy());
+//     // let main = document.querySelector('#main');
+//     // console.log(main.firstChild);
+//     // console.log(main.firstChild.firstChild);
+//     // console.log(main.firstChild.firstChild.firstChild);
+//     // console.log(main.firstChild.firstChild.firstChild.firstChild);
+//     // function Father(){
+//     //   this.name = "father";
+//     // }
+//     // Father.prototype.sayHi = function(){
+//     //   // console.log('hi');
+//     //   return this.name
+//     // }
+
+//     // function Son(){}
+
+//     // Object.setPrototypeOf(Son, Father.prototype)
+//     // console.log(Son);
+//     // console.log(Father.prototype)
+  </script> -->
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+  </script>
+  <script>
+    //数组的响应式处理
+    const arrayPrototype = Array.prototype
+    const arrayMethods = Object.create(arrayPrototype)
+    const methodsNeedChange = [
+      'push',
+      'pop',
+      'shift',
+      'unshift',
+      'splice',
+      'sort',
+      'reverse'
+    ]
+    methodsNeedChange.forEach(methodName =>{
+      const origin = arrayPrototype[methodName]
+      def(arrayMethods,methodName,function(){
+        console.log('object');
+        origin.apply(this,arguments);
+      },false)
+    })
+    // utils
+    function def(obj,key,value,enumerable){
+      Object.defineProperty(obj,key,{
+        value,
+        enumerable,
+        writable:true,
+        configurable:true
+      });
+
+    }
+
+    function defineReactive(obj,key,val){
+      // console.log(arguments.length);
+      if (arguments.length === 2)  val = obj[key]
+
+      //子元素进行observe
+      let childOb = observe(val)
+
+      Object.defineProperty(obj,key,{
+        //可枚举，配置
+        enumerable:true,
+        configurable:true,
+        get(){
+          console.log('你试图访问',key,'属性',val);
+          return val
+        },
+        set(newValue){
+          if (val === newValue) return
+          console.log('你试图修改',key,'属性',val);
+          val = newValue
+
+          childOb = observe(newValue)
+        }
+      })
+    }
+
+
+    class Observe{
+      constructor(val){
+        def(val,'__ob__',this,false)
+        // console.log(value);
+        if (Array.isArray(val)){
+          Object.setPrototypeOf(val,arrayMethods)
+          this.observeArray(val)
+        }else{
+          this.walk(val)
+        }
+      }
+      walk(val){
+        for (let k in val){
+          defineReactive(val,k)
+        }
+      }
+    }
+
+    //作用：将对象的每个层级的数据都改为响应式的
+    function observe(val){
+      if (typeof val !== "object") return
+      let ob
+      //有————ob————属性时 __ob__用于存放Observe类的实例
+      if (typeof val.__ob__ !== 'undefined'){
+        ob = val[__ob__]
+      }else{
+        ob = new Observe(val)
+      }
+      return ob;
+    }
+
+    function observeArray(arr){
+      for (let i=0; i<arr.length; i++){
+        observe(arr[i])
+      }
+    }
+
+    const obj = {
+      a:{
+        m:{
+          n:5
+        }
+      }
+    }
+
+    // defineReactive(obj,'a',10)
+    // console.log(observe(obj));
+
+    observe(obj)
+    const arr = [1,2,3,4,56]
+    observe(arr)
+    console.log(arr);
+    arr.push(1)
+
+    // console.log(obj.a.m.n);
+
+
+  </script>
+</body>
+</html>
+
+
+<!-- // console.log(obj);
+// console.log(obj.a);
+// obj.a = 200
+// console.log(obj.a); -->

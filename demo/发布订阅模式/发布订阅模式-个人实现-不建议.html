@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  // https://juejin.cn/post/7231172059103117372
+  //中心
+  class MessageBroker {
+    constructor() {
+      this.subscriptions = {}
+    }
+    //发布消息
+    publish(topic,message){
+      if(this.subscriptions[topic]){
+        this.subscriptions[topic].forEach(subscriber => subscriber.update())
+      }
+    }
+    //订阅消息
+    subscribe (event, subscriber) {
+      (this.subscriptions[event] && this.subscriptions[event]).push(subscriber)
+    }
+  }
+  //订阅者
+  class Subscriber{
+    constructor(broker,name){
+      this.broker = broker
+      this.name = name
+    }
+    update(topic){
+      console.log(`订阅者${this.name}听到了数据改变`);
+    }
+  }
+  //发布者
+  class Publisher{
+    constructor(broker,name){
+      this.broker = broker
+      this.name = name
+    }
+    publishMessage(topic,message){
+      this.broker.publish(topic,message)
+    }
+  }
+  const broker = new MessageBroker();
+  const publisher = new Publisher(broker);
+
+  const subscriber1 = new Subscriber(broker, 'Alice');
+  const subscriber2 = new Subscriber(broker, 'Bob');
+
+  subscriber1.subscribeToTopic('news');
+  subscriber2.subscribeToTopic('weather');
+
+  publisher.publishMessage('news', 'Breaking news: the sky is blue');
+  publisher.publishMessage('weather', 'It will be sunny tomorrow');
+</script>
+
+</html>

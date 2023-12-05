@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  //被观察者对象
+  class Person {
+    constructor() {
+      this.dataObservers = {
+        //被观察的属性 可以有多个
+        level: {
+          data: 10,
+          observer: []
+        }
+      };
+      
+      this.defineReactive(this.dataObservers.level, 'data', this.dataObservers.level['data']);
+    }
+    defineReactive (obj, key, value) {
+      let _this = this
+      Object.defineProperty(obj, key, {
+        get () {
+          // console.log("getter");
+          return value;
+        },
+        set (newValue) {
+          // console.log("setter");
+          if (newValue == value) {
+            return;
+          }
+          value = newValue;
+          //通知观察者
+          _this.notifyObservers("level");
+        }
+      })
+
+    }
+    //注册观察者
+    registerObserver (observer, health) {
+      (this.dataObservers[health].observer || (this.dataObservers[health].observer = [])).push(observer);
+    }
+
+    //移除观察者
+    removeObserver (observer, health) {
+      this.dataObservers[health].observer.filter(item => item !== observer);
+    }
+
+    //通知观察者
+    notifyObservers (health) {
+      console.log(health)
+      console.log(this.dataObservers[health].observer);
+      this.dataObservers[health].observer.forEach(item => item.update(this.dataObservers[health].data));
+    }
+  }
+
+  class Observer1 {
+    constructor(name, health) {
+      this.name = name;
+      this.reward = 1
+      // this.health = health;
+      // this.subject.registerObserver(this, this.health);
+    }
+    update (data) {
+      if (data > 10) this.reward *= 10
+      console.log(`观察者对象${this.name}观察到了等级变化，等级是${data},提升奖励，新奖励是${this.reward}`)
+      // this.subject.dataObservers[this.health].data = data;
+      // this.subject.notifyObservers(this.health);
+    }
+  }
+
+  class Observer2 {
+    constructor(name, health) {
+      this.name = name;
+      this.level = 0
+      // this.health = health;
+      // this.subject.registerObserver(this, this.health);
+    }
+    update (data) {
+      if (data > 20) this.level = 25
+      console.log(`观察者对象${this.name}观察到了等级变化，等级是${data}，我要升级，新等级${this.level}`)
+    }
+  }
+
+  const person = new Person();
+
+  const levelUp = new Observer1('levelUp', 'level');
+  const levelDown = new Observer2('levelDown', 'level');
+
+  //添加观察者对象
+  person.registerObserver(levelUp, 'level');
+  person.registerObserver(levelDown, 'level');
+
+  //自身状态改变，派发更新
+  person.dataObservers.level.data = 100;
+  // person.notifyObservers("level")
+
+</script>
+
+</html>

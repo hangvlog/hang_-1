@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  const data = {
+    name: 'Yimwu',
+    id: 001,
+    information: {
+      tel: '135xxxxx354',
+      email: '15xxxxx@xx.com'
+    }
+  }
+  function defineReactive (obj, key, value) {
+    // observe(value)
+    Object.defineProperty(obj, key, {
+      get () {
+        //进行依赖收集
+        console.log('get', value)
+        return value
+      },
+      set (newValue) {
+        observe(newValue)
+        console.log('set',newValue);
+        if (newValue === value) return
+        value = newValue
+        //进行派发更新
+      }
+    })
+  }
+  function observe (data) {
+    if (typeof data !== 'object' || data === null) {
+      return data
+    } else {
+      for (let key in data) {
+        defineReactive(data, key, data[key])
+      }
+    }
+  }
+  observe(data)
+  // console.log(data);
+  data.name = 'Yimwu1'
+  data.id  = {id:1200}
+  // data.id.id = 3000
+</script>
+</html>

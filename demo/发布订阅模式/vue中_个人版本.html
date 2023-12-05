@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  function eventsMixin () {
+    Object.prototype._event = {}
+    // console.log(this); //指向Window 严格模式指向undefined
+    //添加事件订阅
+    Object.prototype.$on = function (event, callback) {
+      if (Array.isArray(event)) {
+        event.forEach(item => {
+          this.$on(item, callback)
+        })
+      } else {
+        // console.log(this._event);
+        (this._event[event] || (this._event[event] = [])).push(callback)
+      }
+      return this;
+    }
+
+    //触发事件
+    Object.prototype.$emit = function (event, ...args) {
+      this._event[event] && this._event[event].forEach(callback => callback.apply(this, args))
+    }
+
+    //注册一次
+    Object.prototype.$once = function (event, callback) {
+      // 添加事件订阅
+      const on = () => {
+        //移除只执行一次的事件订阅
+        this.$off(event, on)
+        callback.apply(this, arguments)
+        // this.$off(event, on)
+      }
+      on.fn = callback;
+      this.$on(event, on);
+      return this
+      // this.$on(event, callback)
+    }
+
+    //取消事件订阅
+    Object.prototype.$off = function (event, callback) {
+      // all，若没有传参数，清空所有订阅
+      if (arguments.length === 0) {
+        this._event = Object.create(null)
+        return this
+      }
+      //若没有传递取消订阅的事件名称
+      if (!callback) {
+        // 移除所有事件
+        this._event[event] = null
+        return this
+      }
+      //删除事件对应的回掉函数
+      this._event[event] = this._event[event].filter(item => item !== callback && item.fn !== callback)
+    }
+  }
+  eventsMixin()
+  // 测试$on
+  function test01 () {
+    function handlerA () {
+      console.log('handlerA');
+    }
+    function handlerB () {
+      console.log('handlerB');
+    }
+    function handlerC () {
+      console.log('handlerC');
+    }
+
+    // 使用构造函数创建一个实例
+    const person1 = {};
+
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+
+    console.log('person1 :>> ', person1._event);
+  }
+  // 测试$off
+  function test02 () {
+    function handlerA () {
+      console.log('handlerA');
+    }
+    function handlerB () {
+      console.log('handlerB');
+    }
+    function handlerC () {
+      console.log('handlerC');
+    }
+    // 使用构造函数创建一个实例
+    const person1 = new Observer();
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+    person1.$on('buy', handlerC);
+    console.log('取消回调前 :>> ', person1);
+    person1.$off("buy", handlerA)
+    console.log('取消回调后 :>> ', person1);
+    person1.$off("buy")
+    console.log('删除整个事件 :>> ', person1);
+  }
+  // test02()
+  // 测试$emit
+  function test03 () {
+    function handlerA (...args) {
+      console.log('buy handlerA', args);
+    }
+    function handlerB () {
+      console.log('buy handlerB');
+    }
+    function handlerC () {
+      console.log('buy handlerC');
+    }
+    // 使用构造函数创建一个实例
+    const person1 = {};
+    person1.$on('buy', handlerA);
+    person1.$on('buy', handlerB);
+    person1.$on('buy', handlerC);
+    console.log('person1 :>> ', person1);
+    // 触发 buy 事件
+    person1.$emit('buy', "66666", "adsasd")
+  }
+  // test03()
+  //这个$once不好实现，建议采用博主那个方法https://blog.csdn.net/lucky569/article/details/118542497
+  // function test04 () {
+  //   function handlerA (...args) {
+  //     console.log('buy handlerA', args);
+  //   }
+  //   function handlerB () {
+  //     console.log('buy handlerB');
+  //   }
+  //   function handlerC () {
+  //     console.log('buy handlerC');
+  //   }
+  //   function handlerD (d) {
+  //     console.log('buy handlerD',d);
+  //   }
+  //   // 使用构造函数创建一个实例
+  //   const person1 = {};
+  //   person1.$on('buy', handlerA);
+  //   person1.$on('buy', handlerB);
+  //   person1.$on('buy', handlerC);
+  //   console.log('person1 :>> ', person1);
+  //   // 触发 buy 事件
+  //   person1.$emit('buy', "66666", "adsasd")
+  //   person1.$once('tmp', handlerD)
+  //   // person1.$emit('tmp', "once", "once")
+
+  // }
+  // test04()
+</script>
+</html>

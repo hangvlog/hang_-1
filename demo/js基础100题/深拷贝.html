@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+<script>
+  Object.prototype.myDeepCopy = function(){
+  if (typeof this !== 'object') return this;
+  let ans = Array.isArray(this) ? [] : {};
+  for (let key in this) {
+    if (this.hasOwnProperty(key)) {
+      ans[key] = typeof this[key] === 'object' ? this[key].myDeepCopy() : this[key];
+    }
+  }
+  return ans;
+}
+// const arr = [1, 2, 3, [4, 5, [6]]]
+// console.log(arr.myDeepCopy());
+
+// // // 对象深拷贝
+// let obj = { 'a': 12, b: { 'c': 'aa', 'd': [] } }
+// console.log(obj.myDeepCopy());
+// console.log(obj);
+</script>
+</html>

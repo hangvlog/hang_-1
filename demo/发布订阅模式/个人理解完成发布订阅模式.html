@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  // 三个对象
+  // 发布订阅中心
+  // 维护所有发布者 订阅者
+  class PubSubCenter {
+    constructor() {
+      this.PubSub = {}
+    }
+    addPublisher (messageName, message) {
+      if (!this.PubSub[messageName]){
+        this.PubSub[messageName] = {}
+      }
+      (this.PubSub[messageName].message || (this.PubSub[messageName].message = [])).push(message)
+    }
+    addSubscriber (messageName, subscriber,callback) {
+      if (!this.PubSub[messageName]){
+        this.PubSub[messageName] = {}
+      }
+      (this.PubSub[messageName].subscriber || (this.PubSub[messageName].subscriber = [])).push({subscriber,callback})
+    }
+    notify (messageName) {
+      console.log(this.PubSub[messageName].subscriber);
+      // console.log(Array.isArray(this.PubSub[messageName].subscriber));
+      this.PubSub[messageName].subscriber.forEach(element => {
+        // console.log(element);
+        console.log("message",this.PubSub[messageName].message);
+        // element.callback(this.PubSub[messageName].message)
+      });
+      // this.PubSub[messageName] && this.PubSub[messageName].subscriber && this.PubSub[messageName].subscriber.foreach(item => {
+      //   item.callback(this.PubSub[messageName].message)
+      // })
+    }
+  }
+  class Subscriber {
+    constructor(name,pubsub) {
+      this.name = name
+      this.pubsub = pubsub
+    }
+    subscribe(type,callback){
+      this.pubsub.addSubscriber(type,this,callback)
+    }
+  }
+  class Publisher {
+    constructor(name,pubsub) {
+      this.name = name
+      this.pubsub = pubsub
+    }
+    publish (message) {
+      this.pubsub.addPublisher(this.name, message)
+      console.log("发布者，",this.name,"发布了消息,消息名称", message,'现在的消息内容',this.pubsub.PubSub)
+    }
+  }
+  const TYPE_A = 'music';
+  const pubsub = new PubSubCenter();
+  const publisherA = new Publisher('publisherA', pubsub);
+
+  publisherA.publish(TYPE_A, 'we are young');
+  console.log(pubsub);
+
+  // const subscriberA = new Subscriber('subscriberA',pubsub);
+  // subscriberA.subscribe(TYPE_A, function(value){
+  //   console.log('subscriberA',value)
+  // })
+
+  // pubsub.notify(TYPE_A);
+  // subscriberA.
+
+
+
+</script>
+
+</html>
