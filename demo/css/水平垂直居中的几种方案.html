@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .outer {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #999;
+  }
+
+  .inner {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #999;
+  }
+</style>
+
+<!-- 方案一flex布局实现 -->
+<!-- <style>
+  /* .outer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+  .outer{
+    display: flex;
+  }
+  .inner{
+    margin: auto;
+  }
+</style> -->
+
+<!-- 方案二 grid布局实现 -->
+<!-- <style>
+  /* .outer{
+    display: grid;
+  }
+  .inner{
+    justify-self:center;
+    align-self: center;
+  } */
+</style> -->
+
+<!-- 方案三 使用定位实现 -->
+<!-- <style>
+  .outer{
+    position: relative;
+  }
+  .inner{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+</style> -->
+
+<!-- 方案四 table-ceil实现 -->
+<style>
+  .outer {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .inner {
+    display: block;
+    /* 还可以是 table | flex | grid，但不能是 inline-xxx */
+    margin: 0 auto;
+  }
+</style>
+
+<body>
+  <div class="outer">
+    <div class="inner">hello world</div>
+  </div>
+</body>
+
+</html>

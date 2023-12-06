@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  // 函数防抖1
+  function debounce (fn, interval) {
+    let timer;
+    let _this = this
+    return function (...args) {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        fn.apply(_this, ...args)
+      }, interval)
+    }
+  }
+
+  // 使用
+  window.onresize = debounce(function () {
+    console.log("resize");
+  }, 1000);
+</script>
+
+</html>

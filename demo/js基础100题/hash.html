@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="#section1">Section 1</a>
+  <a href="#section2">Section 2</a>
+  <button id="myButton">Change Hash</button>
+</body>
+<script>
+  window.addEventListener("hashchange", (event) => {
+    console.log('hashchange');
+    // console.log(location.hash);
+    // console.log(event);
+    // alert("hash")
+  });
+  window.addEventListener("popstate", (event) => {
+    console.log('popstate');
+  });
+  document.getElementById("myButton").addEventListener("click", function () {
+    window.history.pushState('', '', 'url')
+    // location.hash = "#section3";
+  });
+</script>
+
+</html>
