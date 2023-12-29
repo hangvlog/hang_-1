@@ -38,3 +38,20 @@ function insertionSort () {
 }
 // insertionSort()
 //归并排序
+
+// 快速排序
+function quickSort (arr) {
+  if (arr.length <= 1) return arr
+  let left = [], right = []
+  let midVal = arr[0]
+  for (let i = 1; i < arr.length; i++) {
+    let item = arr[i]
+    if (item < midVal) {
+      left.push(item)
+    } else {
+      right.push(item)
+    }
+  }
+  return [...quickSort(left),midVal,...quickSort(right)]
+}
+console.log(quickSort(arr));
