@@ -57,4 +57,17 @@
 //   }
 // };
 
-console.log(666);
+// console.log(666);
+// const handleStartRecord = ({ flag = false, isFirst = false }) => {
+//   console.log(flag, isFirst);
+// }
+// handleStartRecord({isFirst:true})
+// debugger
+
+const a = {
+  b:12,
+  c:16
+}
+const b = {...a,b:55}
+console.log(b);
+debugger
